@@ -1,9 +1,9 @@
-#Ух, первый репозиторий, первый удалённый репозиторий
+Huh, first repository, first remote repository
 
-Корнеев Павел Б01-008
+Korneev Pavel B01-008
 
 
-Структура (branch - master):
+Structure (branch - master):
 \Git\ciao-mundo.txt
  \   \hello-world.txt
   \   \hola-mundo.txt
