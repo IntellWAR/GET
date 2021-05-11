@@ -1,4 +1,4 @@
-﻿Huh, first repository, first remote repository
+#Huh, first repository, first remote repository
 
 Korneev Pavel B01-008
 
