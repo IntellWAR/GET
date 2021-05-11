@@ -1,4 +1,4 @@
-Huh, first repository, first remote repository
+п»їHuh, first repository, first remote repository
 
 Korneev Pavel B01-008
 
@@ -7,7 +7,7 @@ Structure (branch - master):
 \Git\ciao-mundo.txt
  \   \hello-world.txt
   \   \hola-mundo.txt
-   \   \здравствуй-мир.txt
+   \   \Р·РґСЂР°РІСЃС‚РІСѓР№-РјРёСЂ.txt
     \ 
-     \LibreOffice\Корнеев Б01-008 (GET).odt
+     \LibreOffice\РљРѕСЂРЅРµРµРІ Р‘01-008 (GET).odt
       \Matlab\Stars.m
