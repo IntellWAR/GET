@@ -18,8 +18,7 @@ int64_t AllRead(int fd, char *buf, int64_t FileSize);
 
 int AllWrite(int fd, char *buf, int FileSize);
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   int N, fd;
   int64_t FileSize;
   char *From;
@@ -60,20 +59,11 @@ int main(int argc, char **argv)
       printf("Writing error\n");
       return 5;
     }
-    if (BizzBuzzResult == 3) {
-      printf("Incorrect input\n");
-      return 6;
-    }
-    if (BizzBuzzResult == 4) {
-      printf("Incorrect input\n");
-      return 7;
-    }
   }
   return 0;
 }
 
-int BizzBuzz(char *from, char *to, int64_t FileSize)
-{
+int BizzBuzz(char *from, char *to, int64_t FileSize) {
   int fd, CheckedSymbs = 0;
   char buf[FileSize];
   int Number;
@@ -100,7 +90,10 @@ int BizzBuzz(char *from, char *to, int64_t FileSize)
   endSymb = *endOFline;
   while (endOFline != buf + CheckedSymbs) {
     if (endSymb != ' ' && endSymb != '\t' && endSymb != '\n') {
-      return 3;
+      if (AllWrite(fd, buf + CheckedSymbs,
+                   endOFline - buf + CheckedSymbs) != 0) {
+        return 2;
+      }
     }
     if (Number == 0) {
       write(fd, &"0 ", 2);
@@ -140,8 +133,7 @@ int BizzBuzz(char *from, char *to, int64_t FileSize)
   return 0;
 }
 
-int64_t FileSizeF(int fd)
-{
+int64_t FileSizeF(int fd) {
   struct stat File;
   if ((fstat(fd, &File) != 0) || (!S_ISREG(File.st_mode))) {
     return -2;
@@ -150,8 +142,7 @@ int64_t FileSizeF(int fd)
   }
 }
 
-int64_t AllRead(int fd, char *buf, int64_t FileSize)
-{
+int64_t AllRead(int fd, char *buf, int64_t FileSize) {
   int AllReadBytes = 0;
   int ReadBytes = 0;
   while (AllReadBytes < FileSize) {
@@ -169,8 +160,7 @@ int64_t AllRead(int fd, char *buf, int64_t FileSize)
   return 0;
 }
 
-int AllWrite(int fd, char *buf, int FileSize)
-{
+int AllWrite(int fd, char *buf, int FileSize) {
   int AllWrittenBytes = 0;
   int WrittenBytes = 0;
   while (AllWrittenBytes < FileSize) {
@@ -188,8 +178,7 @@ int AllWrite(int fd, char *buf, int FileSize)
   return 0;
 }
 
-void IntToChar(int Number, int fd)
-{
+void IntToChar(int Number, int fd) {
   int digit;
   int Num = Number;
   char NumberC;

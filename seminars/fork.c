@@ -6,10 +6,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define degree 3
+#define degree 10
 
-int main()
-{
+int main() {
   pid_t pid;
   int pidstatus = 0;
   FILE *fp;
@@ -21,25 +20,20 @@ int main()
   for (int i = 0; i < degree; i++) {
     pid = fork();
     if (pid < 0) {
-      perror ("fork");
+      perror("fork");
       return 2;
     }
     if (pid > 0) {
-      waitpid (pid, &pidstatus, 0);
-      if (WIFEXITED (pidstatus) == 0) {
-        fprintf(stderr ,"ExitErr%d\n", i);
-        return 3;
+      waitpid(pid, &pidstatus, 0);
+      if (WIFEXITED(pidstatus) != 0) {
+        fprintf(fp, "%d:%d\n", pid, WEXITSTATUS(pidstatus));
       } else {
-        fprintf(fp, "%d:%d\n", pid, WEXITSTATUS (pidstatus));
-        if (WEXITSTATUS (pidstatus) == 2) {
-          return 2;
-        }
-        if (WEXITSTATUS (pidstatus) == 3) {
-          return 3;
-        }
+        fprintf(stderr, "ExitErr%d\n", i);
+        return 3;
       }
     }
   }
+
   pid = getpid();
   fprintf(fp, "pid%d\n", pid);
   return 0;
