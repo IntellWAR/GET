@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
 int BizzBuzz(char *from, char *to, int64_t FileSize) {
   int fd, CheckedSymbs = 0;
   char buf[FileSize];
-  int Number;
+  long long int Number = 0;
   char *endOFline;
   char endSymb;
   char *Bizz = "Bizz ";
@@ -86,41 +87,45 @@ int BizzBuzz(char *from, char *to, int64_t FileSize) {
     perror("Descriptor (out)");
   }
 
-  Number = strtol(buf + CheckedSymbs, &endOFline, 10);
+  Number = strtoll(buf + CheckedSymbs, &endOFline, 10);
+  if (Number == LLONG_MAX || Number == LLONG_MIN) {
+    perror("strtoll");
+  }
   endSymb = *endOFline;
-  while (endOFline != buf + CheckedSymbs) {
-    if (endSymb != ' ' && endSymb != '\t' && endSymb != '\n') {
-      if (AllWrite(fd, buf + CheckedSymbs,
-                   endOFline - buf + CheckedSymbs) != 0) {
+  while (endOFline != buf + CheckedSymbs || endSymb != '\0') {
+    if (Number == 0) {
+      if (AllWrite(fd, buf + CheckedSymbs, 1)) {
+        close(fd);
         return 2;
       }
-    }
-    if (Number == 0) {
-      write(fd, &"0 ", 2);
-    } else {
-      if (Number % 15 == 0) {
-        if (AllWrite(fd, BizzBuzz, 9) != 0) {
-          return 2;
-        }
-      } else {
-        if (Number % 5 == 0) {
-          if (AllWrite(fd, Buzz, 5) != 0) {
-            return 2;
-          }
-        } else {
-          if (Number % 3 == 0) {
-            if (AllWrite(fd, Bizz, 5) != 0) {
-              return 2;
-            }
-          } else {
-            IntToChar(Number, fd);
-            write(fd, &" ", 1);
-          }
-        }
+      CheckedSymbs += 1;
+    } else if (Number % 15 == 0) {
+      write(fd, &" ", 1);
+      if (AllWrite(fd, BizzBuzz, 9)) {
+        return 2;
       }
+    } else if (Number % 5 == 0) {
+      write(fd, &" ", 1);
+      if (AllWrite(fd, Buzz, 5)) {
+        return 2;
+      }
+    } else if (Number % 3 == 0) {
+      write(fd, &" ", 1);
+      if (AllWrite(fd, Bizz, 5)) {
+        close(fd);
+        return 2;
+      }
+    } else {
+      write(fd, &" ", 1);
+      IntToChar(Number, fd);
+      write(fd, &" ", 1);
     }
+
     CheckedSymbs = endOFline - buf + 1;
-    Number = strtol(buf + CheckedSymbs, &endOFline, 10);
+    Number = strtoll(buf + CheckedSymbs, &endOFline, 10);
+    if (Number == LLONG_MAX || Number == LLONG_MIN) {
+      perror("strtoll");
+    }
     endSymb = *endOFline;
   }
   if (CheckedSymbs < FileSize) {
@@ -146,16 +151,12 @@ int64_t AllRead(int fd, char *buf, int64_t FileSize) {
   int AllReadBytes = 0;
   int ReadBytes = 0;
   while (AllReadBytes < FileSize) {
-    ReadBytes = read(fd, buf + ReadBytes, FileSize - ReadBytes);
+    ReadBytes = read(fd, buf + AllReadBytes, FileSize - AllReadBytes);
     if (ReadBytes < 0) {
-      perror("Reading (process)");
+      perror("Reading");
       return 1;
     }
     AllReadBytes += ReadBytes;
-  }
-  if (AllReadBytes < FileSize) {
-    perror("Reading (end)");
-    return 1;
   }
   return 0;
 }
@@ -164,16 +165,12 @@ int AllWrite(int fd, char *buf, int FileSize) {
   int AllWrittenBytes = 0;
   int WrittenBytes = 0;
   while (AllWrittenBytes < FileSize) {
-    WrittenBytes = write(fd, buf + WrittenBytes, FileSize - WrittenBytes);
+    WrittenBytes = write(fd, buf + AllWrittenBytes, FileSize - AllWrittenBytes);
     if (WrittenBytes < 0) {
       perror("Writing");
       return 1;
     }
     AllWrittenBytes += WrittenBytes;
-  }
-  if (AllWrittenBytes < FileSize) {
-    perror("Writing (end)");
-    return 1;
   }
   return 0;
 }
