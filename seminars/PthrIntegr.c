@@ -12,7 +12,7 @@ struct thread_argument {
 };
 
 double f(double x) {
-  return x / sin(x);
+  return sqrt(1-1*pow(x, 2))*2;
 }
 
 void *Integrate(void *arg) {
@@ -35,8 +35,8 @@ int main(int argc, char **argv) {
     printf("Invalid number of arguments\n");
     return 1;
   }
-  const double LEFT_BORDER = M_PI_4;
-  const double RIGHT_BORDER = M_PI_2;
+  const double LEFT_BORDER = -1;
+  const double RIGHT_BORDER = 1;
   long long N = strtoll(argv[1], 0, 10);
   long long k = strtoll(argv[2], 0, 10);
   perror("strtoll");
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
   clock_t end = clock();
   double seconds = (double) (end - start) / CLOCKS_PER_SEC;
 
-  printf("sum = %lf\n", sum);
+  printf("sum = %.016lf\n", sum);
   printf("time (sec) = %lf\n", seconds);
   free(thread);
   free(args);
