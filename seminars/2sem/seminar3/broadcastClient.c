@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   int n = recvfrom(socket_fd, buffer, MAX_SIZE, MSG_WAITALL,
                    (struct sockaddr *)&client_addr, &len);
 
-  //buffer[n] = '\n';
+  buffer[n] = '\n';
   buffer[n + 1] = '\0';
   write(1, buffer, n + 1);
   printf("Ansv from: %s:%d\n", inet_ntoa(client_addr.sin_addr),

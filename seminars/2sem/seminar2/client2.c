@@ -3,8 +3,10 @@
 #include <sys/socket.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 const int MAX_SIZE = 4096;
+const char* addr = "192.168.1.51";
 
 int main(int argc, char *argv[]) {
   if (argc < 3) {
@@ -21,7 +23,7 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in socket_info;
   socket_info.sin_family = AF_INET;
   socket_info.sin_port = htons(atoi(argv[2]));
-  socket_info.sin_addr.s_addr = INADDR_ANY;
+  socket_info.sin_addr.s_addr = inet_addr(addr);
   if (!strncmp(argv[1], "TCP", 3)) {
     connect(socket_fd, (struct sockaddr *) &socket_info, sizeof(socket_info));
     while (scanf("%s", buffer) == 1) {
