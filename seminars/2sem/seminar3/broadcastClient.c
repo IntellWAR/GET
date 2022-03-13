@@ -1,3 +1,4 @@
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,10 +12,14 @@ const int MAX_SIZE = 4096;
 int main(int argc, char *argv[]) {
   int socket_fd, a = 1;
   char buffer[MAX_SIZE];
-  
+
   socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
-  
-  struct sockaddr_in server_addr;
+
+  struct sockaddr_in server_addr, client_addr;
+
+  memset(&server_addr, '0', sizeof(server_addr));
+  memset(&client_addr, '0', sizeof(server_addr));
+
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = htons(27312);
   server_addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
@@ -27,14 +32,12 @@ int main(int argc, char *argv[]) {
          (struct sockaddr *)&server_addr, sizeof(server_addr));
 
   int n = recvfrom(socket_fd, buffer, MAX_SIZE, MSG_WAITALL,
-                   (struct sockaddr *)&server_addr, &len);
-  printf ("%d", n);
-  buffer[n] = '\n';
+                   (struct sockaddr *)&client_addr, &len);
+
+  //buffer[n] = '\n';
   buffer[n + 1] = '\0';
   write(1, buffer, n + 1);
-  printf("Ansv from: %d\n", ntohs(server_addr.sin_port));
-  sendto(socket_fd, buffer, strlen(buffer), MSG_CONFIRM,
-         (struct sockaddr *)&server_addr, sizeof(server_addr));
-
+  printf("Ansv from: %s:%d\n", inet_ntoa(client_addr.sin_addr),
+         ntohs(server_addr.sin_port));
   return 0;
 }
