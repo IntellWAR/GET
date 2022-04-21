@@ -10,13 +10,14 @@
 const int MAX_SIZE = 4096;
 
 int main() {
-  int socket_fd, a = 1;
+  int socket_fd, socket2_fd, a = 1;
   struct sockaddr_in client_addr;
   char buffer[MAX_SIZE];
-  char buffer2[1024] = "Who are you? I didn't call you!\n";
+  char buffer2[1024] = "Who are you? I didn't call you!";
   socklen_t len = sizeof(client_addr);
 
   socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
+  socket2_fd = socket(AF_INET, SOCK_DGRAM, 0);
 
   struct sockaddr_in server_addr;
   server_addr.sin_family = AF_INET;
@@ -33,10 +34,8 @@ int main() {
     buffer[n] = '\n';
     buffer[n + 1] = '\0';
     write(1, buffer, n + 1);
-    printf("Msg from: %s:%d\n", inet_ntoa(client_addr.sin_addr),
-           ntohs(client_addr.sin_port));
-    sendto(socket_fd, buffer2, strlen(buffer2), MSG_CONFIRM,
-           (struct sockaddr *)&client_addr, sizeof(client_addr));
+    printf("Msg from: %s:%d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+    sendto(socket2_fd, buffer2, strlen(buffer2), MSG_CONFIRM, (struct sockaddr *)&client_addr, sizeof(client_addr));
     printf("\n");
   }
   return 0;
