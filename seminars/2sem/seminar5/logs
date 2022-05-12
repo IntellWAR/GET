@@ -1,0 +1,5 @@
+12.05.2022 17:24:29 Successful log init.
+12.05.2022 17:24:29 logs.c:88 My first log! 42
+12.05.2022 17:24:29 logs.c:89 [INFO] My second log entry!
+12.05.2022 17:24:29 logs.c:90 [ERROR] My third log entry!
+12.05.2022 17:24:29 logs.c:93 [ERROR] 12 Cannot allocate memory calloc error
